@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base type="string">
+	<strings>
+		<string id="sxa_mod_name" text="Skill XP Announcer"/>
+		<string id="sxa_group_main" text="Skill XP Announcer"/>
+		<string id="sxa_group_content" text="Announcement Content"/>
+		<string id="sxa_enable" text="Enable Announcer"/>
+		<string id="sxa_enable_hint" text="Master switch for the skill/XP announcements."/>
+		<string id="sxa_scope" text="Report Scope"/>
+		<string id="sxa_scope_hint" text="Which heroes to announce for: player only / party members (player party or other lords in the army) / everyone."/>
+		<string id="sxa_scope_player" text="Player only"/>
+		<string id="sxa_scope_party" text="Party members only"/>
+		<string id="sxa_scope_all" text="All"/>
+		<string id="sxa_merge" text="Merge Interval (seconds)"/>
+		<string id="sxa_merge_hint" text="Skill XP gains of the same hero and skill within this interval are merged into one message to avoid spam. Default 1 second."/>
+		<string id="sxa_skillxp" text="Report Skill XP"/>
+		<string id="sxa_skillxp_hint" text="When disabled, skill proficiency XP is not announced."/>
+		<string id="sxa_charxp" text="Report Character XP"/>
+		<string id="sxa_charxp_hint" text="When disabled, character (total) XP is not announced."/>
+		<string id="sxa_skill_remain" text="Show Skill XP Remaining"/>
+		<string id="sxa_skill_remain_hint" text="Show remaining XP to the next skill level in parentheses after the skill XP, e.g. +10(990)."/>
+		<string id="sxa_char_remain" text="Show Character XP Remaining"/>
+		<string id="sxa_char_remain_hint" text="Show remaining XP to the next character level in parentheses, e.g. Character XP +300(4500)."/>
+		<string id="sxa_sep" text=", "/>
+		<string id="sxa_char_label" text="Character XP"/>
+		<string id="sxa_gains" text="{HERO}: {PARTS}"/>
+	</strings>
+</base>
