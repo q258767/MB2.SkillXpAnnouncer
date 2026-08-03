@@ -27,5 +27,16 @@
 		<string id="sxa_sep" text="，"/>
 		<string id="sxa_char_label" text="角色经验"/>
 		<string id="sxa_gains" text="{HERO}的{PARTS}。"/>
+		<string id="sxa_group_battle" text="战斗统计"/>
+		<string id="sxa_battle_stats" text="显示战斗经验表格"/>
+		<string id="sxa_battle_stats_hint" text="战斗中显示每个角色本场获得的技能与角色经验总额。"/>
+		<string id="sxa_battle_opacity" text="表格透明度(%)"/>
+		<string id="sxa_battle_opacity_hint" text="战斗经验表格的透明度。"/>
+		<string id="sxa_battle_font" text="表格字体大小"/>
+		<string id="sxa_battle_font_hint" text="字体较小，避免遮挡画面。"/>
+		<string id="sxa_battle_x" text="表格位置 X"/>
+		<string id="sxa_battle_x_hint" text="表格左侧位置（像素）。"/>
+		<string id="sxa_battle_y" text="表格位置 Y"/>
+		<string id="sxa_battle_y_hint" text="表格顶部位置（像素）。"/>
 	</strings>
 </base>

@@ -5,12 +5,29 @@ using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.Screens;
 
 namespace SkillXpAnnouncer
 {
     public class SubModule : MBSubModuleBase
     {
         private bool _initialized;
+
+        public override void OnMissionBehaviorInitialize(Mission mission)
+        {
+            base.OnMissionBehaviorInitialize(mission);
+            try
+            {
+                if (Game.Current != null && Game.Current.GameStateManager != null && Game.Current.GameStateManager.ActiveState is MissionState missionState && missionState.Handler is MissionScreen missionScreen)
+                {
+                    missionScreen.AddMissionView(new BattleStatsMissionView());
+                }
+            }
+            catch (Exception ex)
+            {
+                FileLog.Log("SkillXpAnnouncer: failed to add battle stats view. " + ex);
+            }
+        }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {

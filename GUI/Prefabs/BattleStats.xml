@@ -1,0 +1,9 @@
+<Prefab>
+  <Window>
+    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" PositionXOffset="@PositionX" PositionYOffset="@PositionY">
+      <Children>
+        <TextWidget Id="BattleStatsText" Text="@Text" FontSize="@FontSize" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" ScaledSuggestedWidth="900" HorizontalAlignment="Left" VerticalAlignment="Top" TextHorizontalAlignment="Left" />
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

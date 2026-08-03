@@ -42,5 +42,25 @@ namespace SkillXpAnnouncer
         [SettingPropertyBool("{=sxa_char_remain}Show Character XP Remaining", RequireRestart = false, HintText = "{=sxa_char_remain_hint}Show remaining XP to the next level, e.g. +300(4500).", Order = 6)]
         [SettingPropertyGroup("{=sxa_group_content}Announcement Content", GroupOrder = 2)]
         public bool ShowCharXpRemaining { get; set; } = true;
+
+        [SettingPropertyBool("{=sxa_battle_stats}Show Battle XP Table", RequireRestart = false, HintText = "{=sxa_battle_stats_hint}Show total skill and character XP gained per hero during the current battle.", Order = 0)]
+        [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
+        public bool ShowBattleStats { get; set; } = true;
+
+        [SettingPropertyFloatingInteger("{=sxa_battle_opacity}Battle Table Opacity (%)", 10f, 100f, "0", RequireRestart = false, HintText = "{=sxa_battle_opacity_hint}Opacity of the battle XP table.", Order = 1)]
+        [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
+        public float BattleStatsOpacity { get; set; } = 80f;
+
+        [SettingPropertyFloatingInteger("{=sxa_battle_font}Battle Table Font Size", 8f, 40f, "0", RequireRestart = false, HintText = "{=sxa_battle_font_hint}Font size of the table, kept small to avoid blocking the view.", Order = 2)]
+        [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
+        public float BattleStatsFontSize { get; set; } = 13f;
+
+        [SettingPropertyFloatingInteger("{=sxa_battle_x}Battle Table X", 0f, 2000f, "0", RequireRestart = false, HintText = "{=sxa_battle_x_hint}Horizontal offset of the table.", Order = 3)]
+        [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
+        public float BattleStatsX { get; set; } = 40f;
+
+        [SettingPropertyFloatingInteger("{=sxa_battle_y}Battle Table Y", 0f, 1200f, "0", RequireRestart = false, HintText = "{=sxa_battle_y_hint}Vertical offset of the table.", Order = 4)]
+        [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
+        public float BattleStatsY { get; set; } = 100f;
     }
 }

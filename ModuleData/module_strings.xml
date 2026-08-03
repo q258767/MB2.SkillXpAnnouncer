@@ -24,5 +24,16 @@
 		<string id="sxa_sep" text=", "/>
 		<string id="sxa_char_label" text="Character XP"/>
 		<string id="sxa_gains" text="{HERO}: {PARTS}"/>
+		<string id="sxa_group_battle" text="Battle Stats"/>
+		<string id="sxa_battle_stats" text="Show Battle XP Table"/>
+		<string id="sxa_battle_stats_hint" text="Show total skill and character XP gained per hero during the current battle."/>
+		<string id="sxa_battle_opacity" text="Table Opacity (%)"/>
+		<string id="sxa_battle_opacity_hint" text="Opacity of the battle XP table."/>
+		<string id="sxa_battle_font" text="Table Font Size"/>
+		<string id="sxa_battle_font_hint" text="Small font to avoid blocking the view."/>
+		<string id="sxa_battle_x" text="Table Position X"/>
+		<string id="sxa_battle_x_hint" text="Left position of the table (pixels)."/>
+		<string id="sxa_battle_y" text="Table Position Y"/>
+		<string id="sxa_battle_y_hint" text="Top position of the table (pixels)."/>
 	</strings>
 </base>

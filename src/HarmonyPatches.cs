@@ -34,6 +34,9 @@ namespace SkillXpAnnouncer
         private static readonly Dictionary<Hero, int> PendingCharXp = new Dictionary<Hero, int>();
         private static DateTime _windowStart = DateTime.MinValue;
 
+        public static readonly Dictionary<Hero, Dictionary<SkillObject, float>> BattleSkillXp = new Dictionary<Hero, Dictionary<SkillObject, float>>();
+        public static readonly Dictionary<Hero, int> BattleCharXp = new Dictionary<Hero, int>();
+
         private static readonly Color SkillXpColor = Color.FromUint(0xFFE8C56B);
 
         internal static void Prefix(HeroDeveloper __instance, SkillObject skill, bool shouldNotify, out XpState __state)
@@ -72,6 +75,7 @@ namespace SkillXpAnnouncer
                 }
                 float skillDelta = __instance.GetPropertyValue(__state.Skill) - __state.BeforeSkillXp;
                 int charDelta = __instance.TotalXp - __state.BeforeTotalXp;
+                AccumulateBattleStats(hero, __state.Skill, skillDelta, charDelta);
                 if (!IsSkillXpEnabled())
                 {
                     skillDelta = 0f;
@@ -345,6 +349,115 @@ namespace SkillXpAnnouncer
             PendingSkillXp.Clear();
             PendingCharXp.Clear();
             _windowStart = DateTime.MinValue;
+        }
+
+        public static void ResetBattleStats()
+        {
+            BattleSkillXp.Clear();
+            BattleCharXp.Clear();
+        }
+
+        private static void AccumulateBattleStats(Hero hero, SkillObject skill, float skillDelta, int charDelta)
+        {
+            try
+            {
+                MCMSettings settings = MCMSettings.Instance;
+                if (settings == null || !settings.ShowBattleStats || hero == null)
+                {
+                    return;
+                }
+                if (skill != null && Math.Abs(skillDelta) > 0.0001f)
+                {
+                    if (!BattleSkillXp.TryGetValue(hero, out Dictionary<SkillObject, float> dict))
+                    {
+                        dict = new Dictionary<SkillObject, float>();
+                        BattleSkillXp[hero] = dict;
+                    }
+                    dict[skill] = dict.TryGetValue(skill, out float v) ? v + skillDelta : skillDelta;
+                }
+                if (charDelta != 0)
+                {
+                    BattleCharXp[hero] = BattleCharXp.TryGetValue(hero, out int c) ? c + charDelta : charDelta;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        public static string BuildBattleStatsText()
+        {
+            try
+            {
+                if (BattleSkillXp.Count == 0 && BattleCharXp.Count == 0)
+                {
+                    return string.Empty;
+                }
+                TextObject charLabel = new TextObject("{=sxa_char_label}角色经验");
+                List<string> lines = new List<string>();
+                HashSet<Hero> done = new HashSet<Hero>();
+                foreach (KeyValuePair<Hero, Dictionary<SkillObject, float>> kv in BattleSkillXp)
+                {
+                    Hero hero = kv.Key;
+                    if (hero == null)
+                    {
+                        continue;
+                    }
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append(hero.Name.ToString());
+                    sb.Append("：");
+                    bool first = true;
+                    foreach (KeyValuePair<SkillObject, float> s in kv.Value)
+                    {
+                        if (Math.Abs(s.Value) < 0.01f)
+                        {
+                            continue;
+                        }
+                        if (!first)
+                        {
+                            sb.Append("  ");
+                        }
+                        first = false;
+                        sb.Append(s.Key.Name.ToString());
+                        sb.Append(s.Value >= 0f ? "+" : "-");
+                        sb.Append(Math.Round(Math.Abs(s.Value)).ToString("0"));
+                    }
+                    if (BattleCharXp.TryGetValue(hero, out int c) && c != 0)
+                    {
+                        if (!first)
+                        {
+                            sb.Append("  ");
+                        }
+                        sb.Append(charLabel.ToString());
+                        sb.Append(c >= 0 ? "+" : "-");
+                        sb.Append(Math.Abs(c).ToString("0"));
+                    }
+                    done.Add(hero);
+                    if (sb.Length > 2)
+                    {
+                        lines.Add(sb.ToString());
+                    }
+                }
+                foreach (KeyValuePair<Hero, int> kv in BattleCharXp)
+                {
+                    if (kv.Value == 0 || kv.Key == null || done.Contains(kv.Key))
+                    {
+                        continue;
+                    }
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append(kv.Key.Name.ToString());
+                    sb.Append("：");
+                    sb.Append(charLabel.ToString());
+                    sb.Append(kv.Value >= 0 ? "+" : "-");
+                    sb.Append(Math.Abs(kv.Value).ToString("0"));
+                    lines.Add(sb.ToString());
+                }
+                return string.Join("\n", lines);
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         internal static void FlushIfWindowElapsed()
