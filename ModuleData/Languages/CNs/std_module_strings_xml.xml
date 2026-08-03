@@ -8,22 +8,22 @@
 		<string id="sxa_group_main" text="技能经验播报"/>
 		<string id="sxa_group_content" text="播报内容"/>
 		<string id="sxa_enable" text="启用播报"/>
-		<string id="sxa_enable_hint" text="技能/经验播报的总开关。"/>
+		<string id="sxa_enable_hint" text="总开关。"/>
 		<string id="sxa_scope" text="播报范围"/>
-		<string id="sxa_scope_hint" text="选择要播报的角色范围：仅玩家 / 仅队友（玩家队伍或军团中的其他将领）/ 全部。"/>
+		<string id="sxa_scope_hint" text="仅玩家、仅队友或全部。"/>
 		<string id="sxa_scope_player" text="仅玩家"/>
 		<string id="sxa_scope_party" text="仅队友"/>
 		<string id="sxa_scope_all" text="全部"/>
 		<string id="sxa_merge" text="合并播报间隔（秒）"/>
-		<string id="sxa_merge_hint" text="同一角色、同一技能在间隔内的经验会合并为一条播报，避免战斗中被刷屏。默认 1 秒。"/>
+		<string id="sxa_merge_hint" text="同一角色、同一技能在间隔内的经验合并为一条播报。"/>
 		<string id="sxa_skillxp" text="播报技能熟练度经验"/>
-		<string id="sxa_skillxp_hint" text="关闭后不播报技能熟练度经验。"/>
+		<string id="sxa_skillxp_hint" text="播报技能熟练度经验。"/>
 		<string id="sxa_charxp" text="播报角色升级经验"/>
-		<string id="sxa_charxp_hint" text="关闭后不播报角色升级（总）经验。"/>
+		<string id="sxa_charxp_hint" text="播报角色升级（总）经验。"/>
 		<string id="sxa_skill_remain" text="技能经验后显示到下一级余量"/>
-		<string id="sxa_skill_remain_hint" text="开启后，技能经验后面用括号显示距下一级还差多少经验，如 +10(990)。"/>
+		<string id="sxa_skill_remain_hint" text="技能经验后显示距下一级还差多少，如 +10(990)。"/>
 		<string id="sxa_char_remain" text="角色经验后显示到下一级余量"/>
-		<string id="sxa_char_remain_hint" text="开启后，角色升级经验后面用括号显示距下一级还差多少，如 角色经验+300(4500)。"/>
+		<string id="sxa_char_remain_hint" text="角色升级经验后显示距下一级还差多少，如 +300(4500)。"/>
 		<string id="sxa_sep" text="，"/>
 		<string id="sxa_char_label" text="角色经验"/>
 		<string id="sxa_gains" text="{HERO}的{PARTS}。"/>
