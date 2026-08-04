@@ -1,8 +1,8 @@
 <Prefab>
   <Window>
-    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" PositionXOffset="@PositionX" PositionYOffset="@PositionY">
+    <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Top">
       <Children>
-        <TextWidget Id="BattleStatsText" Text="@Text" FontSize="@FontSize" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" ScaledSuggestedWidth="900" HorizontalAlignment="Left" VerticalAlignment="Top" TextHorizontalAlignment="Left" />
+        <ListPanel Id="BattleStatsList" StackLayout.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Top" />
       </Children>
     </Widget>
   </Window>

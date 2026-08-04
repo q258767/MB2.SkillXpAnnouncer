@@ -3,7 +3,6 @@
 	<strings>
 		<string id="sxa_mod_name" text="Skill XP Announcer"/>
 		<string id="sxa_group_main" text="Skill XP Announcer"/>
-		<string id="sxa_group_content" text="Announcement Content"/>
 		<string id="sxa_enable" text="Enable Announcer"/>
 		<string id="sxa_enable_hint" text="Master switch."/>
 		<string id="sxa_scope" text="Report Scope"/>
@@ -26,14 +25,32 @@
 		<string id="sxa_gains" text="{HERO}: {PARTS}"/>
 		<string id="sxa_group_battle" text="Battle Stats"/>
 		<string id="sxa_battle_stats" text="Show Battle XP Table"/>
-		<string id="sxa_battle_stats_hint" text="Show total skill and character XP gained per hero during the current battle."/>
+		<string id="sxa_battle_stats_hint" text="Show total skill and character XP gained per hero during the current battle. Default: on."/>
 		<string id="sxa_battle_opacity" text="Table Opacity (%)"/>
-		<string id="sxa_battle_opacity_hint" text="Opacity of the battle XP table."/>
+		<string id="sxa_battle_opacity_hint" text="Opacity of the battle XP table. Default: 40."/>
 		<string id="sxa_battle_font" text="Table Font Size"/>
-		<string id="sxa_battle_font_hint" text="Small font to avoid blocking the view."/>
+		<string id="sxa_battle_font_hint" text="Font size of the table, kept small to avoid blocking the view. Default: 16."/>
 		<string id="sxa_battle_x" text="Table Position X"/>
-		<string id="sxa_battle_x_hint" text="Left position of the table (pixels)."/>
+		<string id="sxa_battle_x_hint" text="Horizontal offset of the table. Default: 400."/>
 		<string id="sxa_battle_y" text="Table Position Y"/>
-		<string id="sxa_battle_y_hint" text="Top position of the table (pixels)."/>
+		<string id="sxa_battle_y_hint" text="Vertical offset of the table. Default: 100."/>
+		<string id="sxa_battle_party" text="Show Party Members"/>
+		<string id="sxa_battle_party_hint" text="Include party members in the table; off shows the player only. Default: on."/>
+		<string id="sxa_battle_health" text="Show Health"/>
+		<string id="sxa_battle_health_hint" text="Show the hero's current health after the name, e.g. XXX(100/300). Default: on."/>
+		<string id="sxa_battle_damage" text="Show Total Damage"/>
+		<string id="sxa_battle_damage_hint" text="Show total damage dealt this battle after the name. Default: on."/>
+		<string id="sxa_dmg_label" text="DMG "/>
+		<string id="sxa_battle_width" text="Table Width"/>
+		<string id="sxa_battle_width_hint" text="Width of the table; long lines wrap only when exceeding this. Default: 1200."/>
+		<string id="sxa_battle_max_rows" text="Max Rows"/>
+		<string id="sxa_battle_max_rows_hint" text="Maximum number of hero rows shown; extra rows are hidden. Default: 10."/>
+		<string id="sxa_battle_sort_dmg" text="Sort by Total Damage"/>
+		<string id="sxa_battle_sort_dmg_hint" text="Sort rows by total damage dealt (highest first). Default: off."/>
+		<string id="sxa_battle_pin_player" text="Pin Player First"/>
+		<string id="sxa_battle_pin_player_hint" text="Always keep the player's row first (takes priority over sorting). Default: on."/>
+		<string id="sxa_group_general" text="General"/>
+		<string id="sxa_debug_log" text="Debug Info"/>
+		<string id="sxa_debug_log_hint" text="Output battle table debug info (row order) to the game log."/>
 	</strings>
 </base>

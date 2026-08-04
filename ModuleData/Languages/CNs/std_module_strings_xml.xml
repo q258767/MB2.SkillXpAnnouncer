@@ -6,7 +6,6 @@
 	<strings>
 		<string id="sxa_mod_name" text="技能经验播报"/>
 		<string id="sxa_group_main" text="技能经验播报"/>
-		<string id="sxa_group_content" text="播报内容"/>
 		<string id="sxa_enable" text="启用播报"/>
 		<string id="sxa_enable_hint" text="总开关。"/>
 		<string id="sxa_scope" text="播报范围"/>
@@ -29,14 +28,32 @@
 		<string id="sxa_gains" text="{HERO}的{PARTS}。"/>
 		<string id="sxa_group_battle" text="战斗统计"/>
 		<string id="sxa_battle_stats" text="显示战斗经验表格"/>
-		<string id="sxa_battle_stats_hint" text="战斗中显示每个角色本场获得的技能与角色经验总额。"/>
+		<string id="sxa_battle_stats_hint" text="战斗中显示每个角色本场获得的技能与角色经验总额。默认：开。"/>
 		<string id="sxa_battle_opacity" text="表格透明度(%)"/>
-		<string id="sxa_battle_opacity_hint" text="战斗经验表格的透明度。"/>
+		<string id="sxa_battle_opacity_hint" text="战斗经验表格的透明度。默认：40。"/>
 		<string id="sxa_battle_font" text="表格字体大小"/>
-		<string id="sxa_battle_font_hint" text="字体较小，避免遮挡画面。"/>
+		<string id="sxa_battle_font_hint" text="表格字体大小，较小以避免遮挡画面。默认：16。"/>
 		<string id="sxa_battle_x" text="表格位置 X"/>
-		<string id="sxa_battle_x_hint" text="表格左侧位置（像素）。"/>
+		<string id="sxa_battle_x_hint" text="表格左侧位置（像素）。默认：400。"/>
 		<string id="sxa_battle_y" text="表格位置 Y"/>
-		<string id="sxa_battle_y_hint" text="表格顶部位置（像素）。"/>
+		<string id="sxa_battle_y_hint" text="表格顶部位置（像素）。默认：100。"/>
+		<string id="sxa_battle_party" text="显示队友"/>
+		<string id="sxa_battle_party_hint" text="表格中显示队友；关闭则只显示玩家。默认：开。"/>
+		<string id="sxa_battle_health" text="显示生命"/>
+		<string id="sxa_battle_health_hint" text="角色名后显示当前生命，如 XXX(100/300)。默认：开。"/>
+		<string id="sxa_battle_damage" text="显示总伤"/>
+		<string id="sxa_battle_damage_hint" text="角色名后显示本场造成的总伤害。默认：开。"/>
+		<string id="sxa_dmg_label" text="总伤"/>
+		<string id="sxa_battle_width" text="表格宽度"/>
+		<string id="sxa_battle_width_hint" text="表格宽度，长行超过此宽度才折行。默认：1200。"/>
+		<string id="sxa_battle_max_rows" text="统计角色上限"/>
+		<string id="sxa_battle_max_rows_hint" text="最多显示的角色行数，超出的隐藏。默认：10。"/>
+		<string id="sxa_battle_sort_dmg" text="按总伤排序"/>
+		<string id="sxa_battle_sort_dmg_hint" text="按本场总伤害从高到低排序。默认：关。"/>
+		<string id="sxa_battle_pin_player" text="玩家置顶"/>
+		<string id="sxa_battle_pin_player_hint" text="始终把玩家所在行放在最前（优先于排序）。默认：开。"/>
+		<string id="sxa_group_general" text="通用"/>
+		<string id="sxa_debug_log" text="调试信息"/>
+		<string id="sxa_debug_log_hint" text="在游戏日志输出战斗表格调试信息（行顺序）。"/>
 	</strings>
 </base>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
@@ -36,6 +37,7 @@ namespace SkillXpAnnouncer
 
         public static readonly Dictionary<Hero, Dictionary<SkillObject, float>> BattleSkillXp = new Dictionary<Hero, Dictionary<SkillObject, float>>();
         public static readonly Dictionary<Hero, int> BattleCharXp = new Dictionary<Hero, int>();
+        public static readonly Dictionary<Hero, int> BattleDamage = new Dictionary<Hero, int>();
 
         private static readonly Color SkillXpColor = Color.FromUint(0xFFE8C56B);
 
@@ -355,6 +357,60 @@ namespace SkillXpAnnouncer
         {
             BattleSkillXp.Clear();
             BattleCharXp.Clear();
+            BattleDamage.Clear();
+        }
+
+        public static void AccumulateBattleDamage(Hero hero, int damage)
+        {
+            try
+            {
+                if (hero == null || damage <= 0)
+                {
+                    return;
+                }
+                MCMSettings settings = MCMSettings.Instance;
+                if (settings == null || !settings.BattleStatsShowDamage)
+                {
+                    return;
+                }
+                if (!settings.BattleStatsShowParty && hero != Hero.MainHero)
+                {
+                    return;
+                }
+                BattleDamage[hero] = BattleDamage.TryGetValue(hero, out int v) ? v + damage : damage;
+            }
+            catch
+            {
+            }
+        }
+
+        private static void GetHeroHealth(Hero hero, out int health, out int maxHealth)
+        {
+            health = 0;
+            maxHealth = 0;
+            try
+            {
+                if (Mission.Current == null)
+                {
+                    return;
+                }
+                foreach (Agent agent in Mission.Current.Agents)
+                {
+                    if (agent == null || agent.IsMount || agent.Character == null)
+                    {
+                        continue;
+                    }
+                    if (agent.Character is CharacterObject characterObject && characterObject.HeroObject == hero)
+                    {
+                        health = (int)Math.Max(0f, agent.Health);
+                        maxHealth = (int)Math.Max(0f, agent.HealthLimit);
+                        return;
+                    }
+                }
+            }
+            catch
+            {
+            }
         }
 
         private static void AccumulateBattleStats(Hero hero, SkillObject skill, float skillDelta, int charDelta)
@@ -363,6 +419,10 @@ namespace SkillXpAnnouncer
             {
                 MCMSettings settings = MCMSettings.Instance;
                 if (settings == null || !settings.ShowBattleStats || hero == null)
+                {
+                    return;
+                }
+                if (!settings.BattleStatsShowParty && hero != Hero.MainHero)
                 {
                     return;
                 }
@@ -385,79 +445,219 @@ namespace SkillXpAnnouncer
             }
         }
 
-        public static string BuildBattleStatsText()
+        public static List<(Hero Hero, string Line)> BuildBattleRows()
         {
             try
             {
-                if (BattleSkillXp.Count == 0 && BattleCharXp.Count == 0)
+                MCMSettings cfg = MCMSettings.Instance;
+                bool showParty = cfg == null || cfg.BattleStatsShowParty;
+                bool showHealth = cfg != null && cfg.BattleStatsShowHealth;
+                bool showDamage = cfg != null && cfg.BattleStatsShowDamage;
+                bool pinPlayer = cfg == null || cfg.PinPlayer;
+                bool sortByDamage = cfg != null && cfg.SortByDamage;
+                int maxRows = cfg != null ? Math.Max(1, (int)cfg.MaxRows) : 10;
+
+                if (BattleSkillXp.Count == 0 && BattleCharXp.Count == 0 && BattleDamage.Count == 0 && !showHealth)
                 {
-                    return string.Empty;
+                    return new List<(Hero, string)>();
                 }
                 TextObject charLabel = new TextObject("{=sxa_char_label}角色经验");
-                List<string> lines = new List<string>();
-                HashSet<Hero> done = new HashSet<Hero>();
+                TextObject dmgLabel = new TextObject("{=sxa_dmg_label}总伤");
+
+                List<Hero> heroes = new List<Hero>();
+                HashSet<Hero> seen = new HashSet<Hero>();
                 foreach (KeyValuePair<Hero, Dictionary<SkillObject, float>> kv in BattleSkillXp)
                 {
-                    Hero hero = kv.Key;
-                    if (hero == null)
+                    if (kv.Key != null && seen.Add(kv.Key))
+                    {
+                        heroes.Add(kv.Key);
+                    }
+                }
+                foreach (KeyValuePair<Hero, int> kv in BattleCharXp)
+                {
+                    if (kv.Key != null && seen.Add(kv.Key))
+                    {
+                        heroes.Add(kv.Key);
+                    }
+                }
+                foreach (KeyValuePair<Hero, int> kv in BattleDamage)
+                {
+                    if (kv.Key != null && seen.Add(kv.Key))
+                    {
+                        heroes.Add(kv.Key);
+                    }
+                }
+                if (showHealth && Mission.Current != null)
+                {
+                    foreach (Agent agent in Mission.Current.Agents)
+                    {
+                        if (agent == null || agent.IsMount || agent.Character == null)
+                        {
+                            continue;
+                        }
+                        if (agent.Character is CharacterObject characterObject && characterObject.HeroObject != null && seen.Add(characterObject.HeroObject))
+                        {
+                            heroes.Add(characterObject.HeroObject);
+                        }
+                    }
+                }
+
+                List<(Hero Hero, string Line)> rows = new List<(Hero, string)>();
+                foreach (Hero hero in heroes)
+                {
+                    if (!showParty && !IsMainHero(hero))
                     {
                         continue;
                     }
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append(hero.Name.ToString());
-                    sb.Append("：");
-                    bool first = true;
-                    foreach (KeyValuePair<SkillObject, float> s in kv.Value)
+                    string line = BuildBattleRow(hero, showHealth, showDamage, charLabel, dmgLabel);
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        rows.Add((hero, line));
+                    }
+                }
+
+                if (pinPlayer)
+                {
+                    List<(Hero Hero, string Line)> playerRows = rows.Where(r => IsMainHero(r.Hero)).ToList();
+                    List<(Hero Hero, string Line)> otherRows = rows.Where(r => !IsMainHero(r.Hero)).ToList();
+                    if (sortByDamage)
+                    {
+                        otherRows = otherRows.OrderByDescending(r => GetBattleDamage(r.Hero)).ToList();
+                    }
+                    rows = playerRows.Concat(otherRows).ToList();
+                }
+                else if (sortByDamage)
+                {
+                    rows = rows.OrderByDescending(r => GetBattleDamage(r.Hero)).ToList();
+                }
+
+                if (rows.Count > maxRows)
+                {
+                    rows.RemoveRange(maxRows, rows.Count - maxRows);
+                }
+                LogRows(rows);
+                return rows;
+            }
+            catch
+            {
+                return new List<(Hero, string)>();
+            }
+        }
+
+        private static string BuildBattleRow(Hero hero, bool showHealth, bool showDamage, TextObject charLabel, TextObject dmgLabel)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(hero.Name.ToString());
+                if (showHealth)
+                {
+                    GetHeroHealth(hero, out int hp, out int maxHp);
+                    sb.Append("(").Append(hp.ToString("0")).Append("/").Append(maxHp.ToString("0")).Append(")");
+                }
+                if (showDamage && BattleDamage.TryGetValue(hero, out int dmg) && dmg > 0)
+                {
+                    sb.Append(" ").Append(dmgLabel.ToString()).Append(dmg.ToString("0"));
+                }
+                if (BattleCharXp.TryGetValue(hero, out int c) && c != 0)
+                {
+                    sb.Append(" ").Append(charLabel.ToString());
+                    sb.Append(c >= 0 ? "+" : "-");
+                    sb.Append(Math.Abs(c).ToString("0"));
+                }
+                if (BattleSkillXp.TryGetValue(hero, out Dictionary<SkillObject, float> dict))
+                {
+                    foreach (KeyValuePair<SkillObject, float> s in dict)
                     {
                         if (Math.Abs(s.Value) < 0.01f)
                         {
                             continue;
                         }
-                        if (!first)
-                        {
-                            sb.Append("  ");
-                        }
-                        first = false;
-                        sb.Append(s.Key.Name.ToString());
+                        sb.Append(" ").Append(s.Key.Name.ToString());
                         sb.Append(s.Value >= 0f ? "+" : "-");
                         sb.Append(Math.Round(Math.Abs(s.Value)).ToString("0"));
                     }
-                    if (BattleCharXp.TryGetValue(hero, out int c) && c != 0)
-                    {
-                        if (!first)
-                        {
-                            sb.Append("  ");
-                        }
-                        sb.Append(charLabel.ToString());
-                        sb.Append(c >= 0 ? "+" : "-");
-                        sb.Append(Math.Abs(c).ToString("0"));
-                    }
-                    done.Add(hero);
-                    if (sb.Length > 2)
-                    {
-                        lines.Add(sb.ToString());
-                    }
                 }
-                foreach (KeyValuePair<Hero, int> kv in BattleCharXp)
-                {
-                    if (kv.Value == 0 || kv.Key == null || done.Contains(kv.Key))
-                    {
-                        continue;
-                    }
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append(kv.Key.Name.ToString());
-                    sb.Append("：");
-                    sb.Append(charLabel.ToString());
-                    sb.Append(kv.Value >= 0 ? "+" : "-");
-                    sb.Append(Math.Abs(kv.Value).ToString("0"));
-                    lines.Add(sb.ToString());
-                }
-                return string.Join("\n", lines);
+                return sb.Length > 2 ? sb.ToString() : null;
             }
             catch
             {
-                return string.Empty;
+                return null;
             }
+        }
+
+        public static bool IsMainHero(Hero hero)
+        {
+            if (hero == null)
+            {
+                return false;
+            }
+            try
+            {
+                if (Hero.MainHero != null)
+                {
+                    if (hero == Hero.MainHero)
+                    {
+                        return true;
+                    }
+                    if (!string.IsNullOrEmpty(hero.StringId) && !string.IsNullOrEmpty(Hero.MainHero.StringId) && hero.StringId == Hero.MainHero.StringId)
+                    {
+                        return true;
+                    }
+                }
+                if (Mission.Current != null && Mission.Current.MainAgent != null && Mission.Current.MainAgent.Character is CharacterObject characterObject && characterObject.HeroObject != null && characterObject.HeroObject == hero)
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+            return false;
+        }
+
+        private static DateTime _lastRowLog = DateTime.MinValue;
+
+        private static void LogRows(List<(Hero Hero, string Line)> rows)
+        {
+            try
+            {
+                MCMSettings cfg = MCMSettings.Instance;
+                if (cfg == null || !cfg.DebugLog)
+                {
+                    return;
+                }
+                if ((DateTime.UtcNow - _lastRowLog).TotalSeconds < 3.0)
+                {
+                    return;
+                }
+                _lastRowLog = DateTime.UtcNow;
+                StringBuilder log = new StringBuilder();
+                for (int i = 0; i < rows.Count; i++)
+                {
+                    string name = "?";
+                    try
+                    {
+                        name = rows[i].Hero.Name.ToString();
+                    }
+                    catch
+                    {
+                    }
+                    log.AppendFormat("[{0}]{1}{2}(dmg {3}) ", i, IsMainHero(rows[i].Hero) ? "*" : string.Empty, name, GetBattleDamage(rows[i].Hero));
+                }
+                MCMSettings logCfg = MCMSettings.Instance;
+                bool logPin = logCfg != null && logCfg.PinPlayer;
+                bool logSort = logCfg != null && logCfg.SortByDamage;
+                Debug.Print("SXA rows (pin=" + logPin + " sort=" + logSort + "): " + log);
+            }
+            catch
+            {
+            }
+        }
+
+        private static int GetBattleDamage(Hero hero)
+        {
+            return BattleDamage.TryGetValue(hero, out int v) ? v : 0;
         }
 
         internal static void FlushIfWindowElapsed()
