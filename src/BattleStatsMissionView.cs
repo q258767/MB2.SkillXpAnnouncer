@@ -20,6 +20,7 @@ namespace SkillXpAnnouncer
         private readonly List<TextWidget> _rows = new List<TextWidget>();
         private Brush _defaultBrush;
         private Brush _playerBrush;
+        private Brush _abnormalBrush;
         private bool _initialized;
         private float _appliedOpacity = -1f;
 
@@ -46,6 +47,7 @@ namespace SkillXpAnnouncer
                 {
                     _defaultBrush = _layer.UIContext.BrushFactory.GetBrush("BattleStatsBrush");
                     _playerBrush = _layer.UIContext.BrushFactory.GetBrush("BattleStatsPlayerBrush");
+                    _abnormalBrush = _layer.UIContext.BrushFactory.GetBrush("BattleStatsAbnormalBrush");
                 }
                 MissionScreen.AddLayer(_layer);
                 _initialized = true;
@@ -103,7 +105,9 @@ namespace SkillXpAnnouncer
                 if (i < count)
                 {
                     _rows[i].IsVisible = true;
-                    _rows[i].Brush = HarmonyPatches.IsMainHero(data[i].Hero) ? _playerBrush : _defaultBrush;
+                    _rows[i].Brush = HarmonyPatches.IsHeroAbnormal(data[i].Hero)
+                        ? _abnormalBrush
+                        : (HarmonyPatches.IsMainHero(data[i].Hero) ? _playerBrush : _defaultBrush);
                     if (_rows[i].Brush != null)
                     {
                         _rows[i].Brush.FontSize = fontSize;

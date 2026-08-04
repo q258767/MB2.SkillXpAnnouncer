@@ -19,9 +19,9 @@ namespace SkillXpAnnouncer
         [SettingPropertyGroup("{=sxa_group_main}Skill XP Announcer", GroupOrder = 1)]
         public bool Enabled { get; set; } = true;
 
-        [SettingPropertyDropdown("{=sxa_scope}Report Scope", RequireRestart = false, HintText = "{=sxa_scope_hint}Player only, party members, or everyone.", Order = 1)]
+        [SettingPropertyDropdown("{=sxa_scope}Report Scope", RequireRestart = false, HintText = "{=sxa_scope_hint}Report scope of skill and character XP messages. Player only: your own gains. Party only: companions and clan members. Player and party: both. All: also allied lords and helped neutrals. Default: Player and party.", Order = 1)]
         [SettingPropertyGroup("{=sxa_group_main}Skill XP Announcer", GroupOrder = 1)]
-        public Dropdown<string> ReportScope { get; set; } = new Dropdown<string>(new[] { "{=sxa_scope_player}Player only", "{=sxa_scope_party}Party members only", "{=sxa_scope_all}All" }, 2);
+        public Dropdown<string> ReportScope { get; set; } = new Dropdown<string>(new[] { "{=sxa_scope_player}Player only", "{=sxa_scope_party}Party members only", "{=sxa_scope_player_party}Player and party", "{=sxa_scope_all}All" }, 2);
 
         [SettingPropertyFloatingInteger("{=sxa_merge}Merge Interval (seconds)", 0.2f, 5f, "0.0", RequireRestart = false, HintText = "{=sxa_merge_hint}Merge gains of the same hero and skill within this interval into one message.", Order = 2)]
         [SettingPropertyGroup("{=sxa_group_main}Skill XP Announcer", GroupOrder = 1)]
@@ -51,43 +51,47 @@ namespace SkillXpAnnouncer
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public bool BattleStatsShowParty { get; set; } = true;
 
-        [SettingPropertyFloatingInteger("{=sxa_battle_opacity}Battle Table Opacity (%)", 10f, 100f, "0", RequireRestart = false, HintText = "{=sxa_battle_opacity_hint}Opacity of the battle XP table. Default: 40.", Order = 11)]
+        [SettingPropertyBool("{=sxa_battle_allies}Show Allies", RequireRestart = false, HintText = "{=sxa_battle_allies_hint}Include allied heroes (lords of your faction or helped neutrals) in the table. Default: off.", Order = 2)]
+        [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
+        public bool ShowAllies { get; set; } = false;
+
+        [SettingPropertyFloatingInteger("{=sxa_battle_opacity}Battle Table Opacity (%)", 10f, 100f, "0", RequireRestart = false, HintText = "{=sxa_battle_opacity_hint}Opacity of the battle XP table. Default: 40.", Order = 12)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public float BattleStatsOpacity { get; set; } = 40f;
 
-        [SettingPropertyFloatingInteger("{=sxa_battle_font}Battle Table Font Size", 8f, 40f, "0", RequireRestart = false, HintText = "{=sxa_battle_font_hint}Font size of the table, kept small to avoid blocking the view. Default: 16.", Order = 10)]
+        [SettingPropertyFloatingInteger("{=sxa_battle_font}Battle Table Font Size", 8f, 40f, "0", RequireRestart = false, HintText = "{=sxa_battle_font_hint}Font size of the table, kept small to avoid blocking the view. Default: 16.", Order = 11)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public float BattleStatsFontSize { get; set; } = 16f;
 
-        [SettingPropertyBool("{=sxa_battle_health}Show Health", RequireRestart = false, HintText = "{=sxa_battle_health_hint}Show the hero's current health after the name, e.g. XXX(100/300). Default: on.", Order = 2)]
+        [SettingPropertyBool("{=sxa_battle_health}Show Health", RequireRestart = false, HintText = "{=sxa_battle_health_hint}Show the hero's current health after the name, e.g. XXX(100/300). Default: on.", Order = 3)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public bool BattleStatsShowHealth { get; set; } = true;
 
-        [SettingPropertyBool("{=sxa_battle_damage}Show Total Damage", RequireRestart = false, HintText = "{=sxa_battle_damage_hint}Show total damage dealt this battle after the name. Default: on.", Order = 3)]
+        [SettingPropertyBool("{=sxa_battle_damage}Show Total Damage", RequireRestart = false, HintText = "{=sxa_battle_damage_hint}Show total damage dealt this battle after the name. Default: on.", Order = 4)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public bool BattleStatsShowDamage { get; set; } = true;
 
-        [SettingPropertyFloatingInteger("{=sxa_battle_width}Table Width", 400f, 3000f, "0", RequireRestart = false, HintText = "{=sxa_battle_width_hint}Width of the table; long lines wrap only when exceeding this. Default: 1200.", Order = 9)]
+        [SettingPropertyFloatingInteger("{=sxa_battle_width}Table Width", 400f, 3000f, "0", RequireRestart = false, HintText = "{=sxa_battle_width_hint}Width of the table; long lines wrap only when exceeding this. Default: 1200.", Order = 10)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public float BattleStatsWidth { get; set; } = 1200f;
 
-        [SettingPropertyFloatingInteger("{=sxa_battle_max_rows}Max Rows", 1f, 50f, "0", RequireRestart = false, HintText = "{=sxa_battle_max_rows_hint}Maximum number of hero rows shown; extra rows are hidden. Default: 10.", Order = 5)]
+        [SettingPropertyFloatingInteger("{=sxa_battle_max_rows}Max Rows", 1f, 50f, "0", RequireRestart = false, HintText = "{=sxa_battle_max_rows_hint}Maximum number of hero rows shown; extra rows are hidden. Default: 10.", Order = 6)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public float MaxRows { get; set; } = 10f;
 
-        [SettingPropertyBool("{=sxa_battle_sort_dmg}Sort by Total Damage", RequireRestart = false, HintText = "{=sxa_battle_sort_dmg_hint}Sort rows by total damage dealt (highest first). Default: off.", Order = 6)]
+        [SettingPropertyBool("{=sxa_battle_sort_dmg}Sort by Total Damage", RequireRestart = false, HintText = "{=sxa_battle_sort_dmg_hint}Sort rows by total damage dealt (highest first). Default: off.", Order = 7)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public bool SortByDamage { get; set; } = false;
 
-        [SettingPropertyBool("{=sxa_battle_pin_player}Pin Player First", RequireRestart = false, HintText = "{=sxa_battle_pin_player_hint}Always keep the player's row first (takes priority over sorting). Default: on.", Order = 4)]
+        [SettingPropertyBool("{=sxa_battle_pin_player}Pin Player First", RequireRestart = false, HintText = "{=sxa_battle_pin_player_hint}Always keep the player's row first (takes priority over sorting). Default: on.", Order = 5)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public bool PinPlayer { get; set; } = true;
 
-        [SettingPropertyFloatingInteger("{=sxa_battle_x}Battle Table X", 0f, 2000f, "0", RequireRestart = false, HintText = "{=sxa_battle_x_hint}Horizontal offset of the table. Default: 400.", Order = 7)]
+        [SettingPropertyFloatingInteger("{=sxa_battle_x}Battle Table X", 0f, 2000f, "0", RequireRestart = false, HintText = "{=sxa_battle_x_hint}Horizontal offset of the table. Default: 400.", Order = 8)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public float BattleStatsX { get; set; } = 400f;
 
-        [SettingPropertyFloatingInteger("{=sxa_battle_y}Battle Table Y", 0f, 1200f, "0", RequireRestart = false, HintText = "{=sxa_battle_y_hint}Vertical offset of the table. Default: 100.", Order = 8)]
+        [SettingPropertyFloatingInteger("{=sxa_battle_y}Battle Table Y", 0f, 1200f, "0", RequireRestart = false, HintText = "{=sxa_battle_y_hint}Vertical offset of the table. Default: 100.", Order = 9)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public float BattleStatsY { get; set; } = 100f;
 

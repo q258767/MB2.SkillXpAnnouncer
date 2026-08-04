@@ -6,9 +6,10 @@
 		<string id="sxa_enable" text="Enable Announcer"/>
 		<string id="sxa_enable_hint" text="Master switch."/>
 		<string id="sxa_scope" text="Report Scope"/>
-		<string id="sxa_scope_hint" text="Player only, party members, or everyone."/>
+		<string id="sxa_scope_hint" text="Report scope of skill and character XP messages. Player only: your own gains. Party only: companions and clan members. Player and party: both. All: also allied lords and helped neutrals. Default: Player and party."/>
 		<string id="sxa_scope_player" text="Player only"/>
 		<string id="sxa_scope_party" text="Party members only"/>
+		<string id="sxa_scope_player_party" text="Player and party"/>
 		<string id="sxa_scope_all" text="All"/>
 		<string id="sxa_merge" text="Merge Interval (seconds)"/>
 		<string id="sxa_merge_hint" text="Merge gains of the same hero and skill within this interval into one message."/>
@@ -36,11 +37,14 @@
 		<string id="sxa_battle_y_hint" text="Vertical offset of the table. Default: 100."/>
 		<string id="sxa_battle_party" text="Show Party Members"/>
 		<string id="sxa_battle_party_hint" text="Include party members in the table; off shows the player only. Default: on."/>
+		<string id="sxa_battle_allies" text="Show Allies"/>
+		<string id="sxa_battle_allies_hint" text="Include allied heroes (lords of your faction or helped neutrals) in the table. Default: off."/>
 		<string id="sxa_battle_health" text="Show Health"/>
 		<string id="sxa_battle_health_hint" text="Show the hero's current health after the name, e.g. XXX(100/300). Default: on."/>
 		<string id="sxa_battle_damage" text="Show Total Damage"/>
 		<string id="sxa_battle_damage_hint" text="Show total damage dealt this battle after the name. Default: on."/>
 		<string id="sxa_dmg_label" text="DMG "/>
+		<string id="sxa_abnormal" text="Abnormal"/>
 		<string id="sxa_battle_width" text="Table Width"/>
 		<string id="sxa_battle_width_hint" text="Width of the table; long lines wrap only when exceeding this. Default: 1200."/>
 		<string id="sxa_battle_max_rows" text="Max Rows"/>

@@ -28,6 +28,7 @@ namespace SkillXpAnnouncer
         {
             PlayerOnly,
             PartyOnly,
+            PlayerAndParty,
             All
         }
 
@@ -38,6 +39,7 @@ namespace SkillXpAnnouncer
         public static readonly Dictionary<Hero, Dictionary<SkillObject, float>> BattleSkillXp = new Dictionary<Hero, Dictionary<SkillObject, float>>();
         public static readonly Dictionary<Hero, int> BattleCharXp = new Dictionary<Hero, int>();
         public static readonly Dictionary<Hero, int> BattleDamage = new Dictionary<Hero, int>();
+        private static readonly HashSet<Hero> SeenBattleHeroes = new HashSet<Hero>();
 
         private static readonly Color SkillXpColor = Color.FromUint(0xFFE8C56B);
 
@@ -303,6 +305,10 @@ namespace SkillXpAnnouncer
                     {
                         return ReportScopeKind.PartyOnly;
                     }
+                    if (index == 2)
+                    {
+                        return ReportScopeKind.PlayerAndParty;
+                    }
                 }
             }
             catch
@@ -311,15 +317,47 @@ namespace SkillXpAnnouncer
             return ReportScopeKind.All;
         }
 
-        private static bool IsFriendlyHero(Hero hero)
+        private static bool IsTournamentBattle()
+        {
+            try
+            {
+                if (Mission.Current == null)
+                {
+                    return false;
+                }
+                foreach (MissionBehavior behavior in Mission.Current.MissionBehaviors)
+                {
+                    if (behavior == null)
+                    {
+                        continue;
+                    }
+                    string typeName = behavior.GetType().Name;
+                    if (typeName == "TournamentFightMissionController" || typeName == "TournamentArcheryMissionController" || typeName == "TournamentJoustingMissionController" || typeName == "TownHorseRaceMissionController")
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return false;
+        }
+
+        private static bool IsTeammateHero(Hero hero)
         {
             if (hero == null)
             {
                 return false;
             }
-            if (IsMainHero(hero))
+            return IsMainHero(hero) || IsInPlayerParty(hero);
+        }
+
+        private static bool IsAllyHero(Hero hero)
+        {
+            if (hero == null || IsTournamentBattle())
             {
-                return true;
+                return false;
             }
             try
             {
@@ -341,7 +379,37 @@ namespace SkillXpAnnouncer
             catch
             {
             }
-            return IsInPlayerParty(hero);
+            return false;
+        }
+
+        private static bool IsAlliesEnabled()
+        {
+            try
+            {
+                MCMSettings settings = MCMSettings.Instance;
+                return settings != null && settings.ShowAllies;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool ShouldIncludeHero(Hero hero)
+        {
+            if (hero == null)
+            {
+                return false;
+            }
+            if (IsTeammateHero(hero))
+            {
+                return true;
+            }
+            if (IsTournamentBattle())
+            {
+                return false;
+            }
+            return IsAlliesEnabled() && IsAllyHero(hero);
         }
 
         private static bool IsInPlayerParty(Hero hero)
@@ -369,8 +437,10 @@ namespace SkillXpAnnouncer
                     return hero == Hero.MainHero;
                 case ReportScopeKind.PartyOnly:
                     return hero != Hero.MainHero && IsInPlayerParty(hero);
-                default:
+                case ReportScopeKind.PlayerAndParty:
                     return hero == Hero.MainHero || IsInPlayerParty(hero);
+                default:
+                    return hero == Hero.MainHero || IsInPlayerParty(hero) || IsAllyHero(hero);
             }
         }
 
@@ -391,6 +461,7 @@ namespace SkillXpAnnouncer
             BattleSkillXp.Clear();
             BattleCharXp.Clear();
             BattleDamage.Clear();
+            SeenBattleHeroes.Clear();
         }
 
         public static void AccumulateBattleDamage(Hero hero, int damage)
@@ -406,7 +477,7 @@ namespace SkillXpAnnouncer
                 {
                     return;
                 }
-                if (!IsFriendlyHero(hero))
+                if (!ShouldIncludeHero(hero))
                 {
                     return;
                 }
@@ -459,7 +530,7 @@ namespace SkillXpAnnouncer
                 {
                     return;
                 }
-                if (!IsFriendlyHero(hero))
+                if (!ShouldIncludeHero(hero))
                 {
                     return;
                 }
@@ -504,6 +575,7 @@ namespace SkillXpAnnouncer
                 }
                 TextObject charLabel = new TextObject("{=sxa_char_label}角色经验");
                 TextObject dmgLabel = new TextObject("{=sxa_dmg_label}总伤");
+                TextObject abnormalLabel = new TextObject("{=sxa_abnormal}异常");
 
                 List<Hero> heroes = new List<Hero>();
                 HashSet<Hero> seen = new HashSet<Hero>();
@@ -536,13 +608,24 @@ namespace SkillXpAnnouncer
                         {
                             continue;
                         }
-                        if (agent.Character is CharacterObject characterObject && characterObject.HeroObject != null && seen.Add(characterObject.HeroObject))
+                        if (agent.Character is CharacterObject characterObject && characterObject.HeroObject != null)
                         {
-                            heroes.Add(characterObject.HeroObject);
+                            SeenBattleHeroes.Add(characterObject.HeroObject);
+                            if (seen.Add(characterObject.HeroObject))
+                            {
+                                heroes.Add(characterObject.HeroObject);
+                            }
                         }
                     }
                 }
-                heroes = heroes.Where(IsFriendlyHero).ToList();
+                foreach (Hero hero in SeenBattleHeroes)
+                {
+                    if (hero != null && seen.Add(hero))
+                    {
+                        heroes.Add(hero);
+                    }
+                }
+                heroes = heroes.Where(ShouldIncludeHero).ToList();
 
                 List<(Hero Hero, string Line)> rows = new List<(Hero, string)>();
                 foreach (Hero hero in heroes)
@@ -551,7 +634,7 @@ namespace SkillXpAnnouncer
                     {
                         continue;
                     }
-                    string line = BuildBattleRow(hero, showHealth, showDamage, charLabel, dmgLabel);
+                    string line = BuildBattleRow(hero, showHealth, showDamage, charLabel, dmgLabel, abnormalLabel);
                     if (!string.IsNullOrEmpty(line))
                     {
                         rows.Add((hero, line));
@@ -586,7 +669,7 @@ namespace SkillXpAnnouncer
             }
         }
 
-        private static string BuildBattleRow(Hero hero, bool showHealth, bool showDamage, TextObject charLabel, TextObject dmgLabel)
+        private static string BuildBattleRow(Hero hero, bool showHealth, bool showDamage, TextObject charLabel, TextObject dmgLabel, TextObject abnormalLabel)
         {
             try
             {
@@ -595,7 +678,14 @@ namespace SkillXpAnnouncer
                 if (showHealth)
                 {
                     GetHeroHealth(hero, out int hp, out int maxHp);
-                    sb.Append("(").Append(hp.ToString("0")).Append("/").Append(maxHp.ToString("0")).Append(")");
+                    if (hp <= 0)
+                    {
+                        sb.Append("(").Append(abnormalLabel.ToString()).Append(")");
+                    }
+                    else
+                    {
+                        sb.Append("(").Append(hp.ToString("0")).Append("/").Append(maxHp.ToString("0")).Append(")");
+                    }
                 }
                 if (showDamage && BattleDamage.TryGetValue(hero, out int dmg) && dmg > 0)
                 {
@@ -625,6 +715,19 @@ namespace SkillXpAnnouncer
             catch
             {
                 return null;
+            }
+        }
+
+        public static bool IsHeroAbnormal(Hero hero)
+        {
+            try
+            {
+                GetHeroHealth(hero, out int health, out int maxHealth);
+                return health <= 0;
+            }
+            catch
+            {
+                return false;
             }
         }
 

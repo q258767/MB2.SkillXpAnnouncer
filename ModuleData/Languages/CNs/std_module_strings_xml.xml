@@ -9,9 +9,10 @@
 		<string id="sxa_enable" text="启用播报"/>
 		<string id="sxa_enable_hint" text="总开关。"/>
 		<string id="sxa_scope" text="播报范围"/>
-		<string id="sxa_scope_hint" text="仅玩家、仅队友或全部。"/>
+		<string id="sxa_scope_hint" text="技能与角色经验播报的范围。仅玩家：只播报你自己。仅队友：只播报同伴与家族成员。玩家阵营：玩家与队友。全部：还播报盟军（本势力领主或被帮助的中立方）。默认：玩家阵营。"/>
 		<string id="sxa_scope_player" text="仅玩家"/>
 		<string id="sxa_scope_party" text="仅队友"/>
+		<string id="sxa_scope_player_party" text="玩家阵营"/>
 		<string id="sxa_scope_all" text="全部"/>
 		<string id="sxa_merge" text="合并播报间隔（秒）"/>
 		<string id="sxa_merge_hint" text="同一角色、同一技能在间隔内的经验合并为一条播报。"/>
@@ -39,11 +40,14 @@
 		<string id="sxa_battle_y_hint" text="表格顶部位置（像素）。默认：100。"/>
 		<string id="sxa_battle_party" text="显示队友"/>
 		<string id="sxa_battle_party_hint" text="表格中显示队友；关闭则只显示玩家。默认：开。"/>
+		<string id="sxa_battle_allies" text="显示盟友"/>
+		<string id="sxa_battle_allies_hint" text="表格中显示盟友（本势力领主或被帮助的中立方）。默认：关。"/>
 		<string id="sxa_battle_health" text="显示生命"/>
 		<string id="sxa_battle_health_hint" text="角色名后显示当前生命，如 XXX(100/300)。默认：开。"/>
 		<string id="sxa_battle_damage" text="显示总伤"/>
 		<string id="sxa_battle_damage_hint" text="角色名后显示本场造成的总伤害。默认：开。"/>
 		<string id="sxa_dmg_label" text="总伤"/>
+		<string id="sxa_abnormal" text="异常"/>
 		<string id="sxa_battle_width" text="表格宽度"/>
 		<string id="sxa_battle_width_hint" text="表格宽度，长行超过此宽度才折行。默认：1200。"/>
 		<string id="sxa_battle_max_rows" text="统计角色上限"/>

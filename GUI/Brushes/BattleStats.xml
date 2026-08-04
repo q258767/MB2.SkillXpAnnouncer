@@ -9,4 +9,9 @@
       <Style Name="Default" FontColor="#E8C56BFF" TextGlowColor="#000000FF" TextOutlineColor="#000000FF" TextOutlineAmount="0.2" TextGlowRadius="0" TextBlur="0" FontSize="16" />
     </Styles>
   </Brush>
+  <Brush Name="BattleStatsAbnormalBrush" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Left" TextVerticalAlignment="Top">
+    <Styles>
+      <Style Name="Default" FontColor="#FF4C4CFF" TextGlowColor="#000000FF" TextOutlineColor="#000000FF" TextOutlineAmount="0.2" TextGlowRadius="0" TextBlur="0" FontSize="16" />
+    </Styles>
+  </Brush>
 </Brushes>
