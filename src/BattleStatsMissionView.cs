@@ -150,9 +150,9 @@ namespace SkillXpAnnouncer
             try
             {
                 Hero hero = GetHero(affectorAgent);
-                if (hero != null && collisionData.InflictedDamage > 0)
+                if (hero != null && blow.InflictedDamage > 0)
                 {
-                    HarmonyPatches.AccumulateBattleDamage(hero, collisionData.InflictedDamage);
+                    HarmonyPatches.AccumulateBattleDamage(hero, blow.InflictedDamage);
                 }
             }
             catch
