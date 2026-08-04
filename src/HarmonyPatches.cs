@@ -311,6 +311,39 @@ namespace SkillXpAnnouncer
             return ReportScopeKind.All;
         }
 
+        private static bool IsFriendlyHero(Hero hero)
+        {
+            if (hero == null)
+            {
+                return false;
+            }
+            if (IsMainHero(hero))
+            {
+                return true;
+            }
+            try
+            {
+                if (Mission.Current != null && Mission.Current.PlayerTeam != null)
+                {
+                    foreach (Agent a in Mission.Current.Agents)
+                    {
+                        if (a == null || a.IsMount || a.Character == null)
+                        {
+                            continue;
+                        }
+                        if (a.Character is CharacterObject co && co.HeroObject == hero && a.Team != null)
+                        {
+                            return a.Team == Mission.Current.PlayerTeam;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return IsInPlayerParty(hero);
+        }
+
         private static bool IsInPlayerParty(Hero hero)
         {
             try
@@ -373,7 +406,11 @@ namespace SkillXpAnnouncer
                 {
                     return;
                 }
-                if (!settings.BattleStatsShowParty && hero != Hero.MainHero)
+                if (!IsFriendlyHero(hero))
+                {
+                    return;
+                }
+                if (!settings.BattleStatsShowParty && !IsMainHero(hero))
                 {
                     return;
                 }
@@ -422,7 +459,11 @@ namespace SkillXpAnnouncer
                 {
                     return;
                 }
-                if (!settings.BattleStatsShowParty && hero != Hero.MainHero)
+                if (!IsFriendlyHero(hero))
+                {
+                    return;
+                }
+                if (!settings.BattleStatsShowParty && !IsMainHero(hero))
                 {
                     return;
                 }
@@ -501,6 +542,7 @@ namespace SkillXpAnnouncer
                         }
                     }
                 }
+                heroes = heroes.Where(IsFriendlyHero).ToList();
 
                 List<(Hero Hero, string Line)> rows = new List<(Hero, string)>();
                 foreach (Hero hero in heroes)
