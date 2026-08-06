@@ -55,9 +55,9 @@ namespace SkillXpAnnouncer
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
         public bool ShowAllies { get; set; } = false;
 
-        [SettingPropertyFloatingInteger("{=sxa_battle_opacity}Battle Table Opacity (%)", 10f, 100f, "0", RequireRestart = false, HintText = "{=sxa_battle_opacity_hint}Opacity of the battle XP table. Default: 40.", Order = 12)]
+        [SettingPropertyFloatingInteger("{=sxa_battle_opacity}Battle Table Opacity (%)", 10f, 100f, "0", RequireRestart = false, HintText = "{=sxa_battle_opacity_hint}Opacity of the battle XP table. Default: 80.", Order = 12)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]
-        public float BattleStatsOpacity { get; set; } = 40f;
+        public float BattleStatsOpacity { get; set; } = 80f;
 
         [SettingPropertyFloatingInteger("{=sxa_battle_font}Battle Table Font Size", 8f, 40f, "0", RequireRestart = false, HintText = "{=sxa_battle_font_hint}Font size of the table, kept small to avoid blocking the view. Default: 16.", Order = 11)]
         [SettingPropertyGroup("{=sxa_group_battle}Battle Stats", GroupOrder = 3)]

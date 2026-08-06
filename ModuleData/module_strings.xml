@@ -28,7 +28,7 @@
 		<string id="sxa_battle_stats" text="Show Battle XP Table"/>
 		<string id="sxa_battle_stats_hint" text="Show total skill and character XP gained per hero during the current battle. Default: on."/>
 		<string id="sxa_battle_opacity" text="Table Opacity (%)"/>
-		<string id="sxa_battle_opacity_hint" text="Opacity of the battle XP table. Default: 40."/>
+		<string id="sxa_battle_opacity_hint" text="Opacity of the battle XP table. Default: 80."/>
 		<string id="sxa_battle_font" text="Table Font Size"/>
 		<string id="sxa_battle_font_hint" text="Font size of the table, kept small to avoid blocking the view. Default: 16."/>
 		<string id="sxa_battle_x" text="Table Position X"/>

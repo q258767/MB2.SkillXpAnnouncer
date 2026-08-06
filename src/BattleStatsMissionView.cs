@@ -22,7 +22,6 @@ namespace SkillXpAnnouncer
         private Brush _playerBrush;
         private Brush _abnormalBrush;
         private bool _initialized;
-        private float _appliedOpacity = -1f;
 
         public override void OnMissionScreenInitialize()
         {
@@ -74,12 +73,6 @@ namespace SkillXpAnnouncer
                 _list.PositionXOffset = cfg.BattleStatsX;
                 _list.PositionYOffset = cfg.BattleStatsY;
                 UpdateRows(cfg);
-                float opacity = Math.Max(0.1f, cfg.BattleStatsOpacity / 100f);
-                if (Math.Abs(opacity - _appliedOpacity) > 0.001f)
-                {
-                    _appliedOpacity = opacity;
-                    GauntletExtensions.SetGlobalAlphaRecursively(_list, opacity);
-                }
             }
             catch
             {
@@ -100,6 +93,7 @@ namespace SkillXpAnnouncer
             }
             int fontSize = (int)cfg.BattleStatsFontSize;
             float width = cfg.BattleStatsWidth;
+            float opacity = Math.Max(0.1f, cfg.BattleStatsOpacity / 100f);
             for (int i = 0; i < _rows.Count; i++)
             {
                 if (i < count)
@@ -111,7 +105,9 @@ namespace SkillXpAnnouncer
                     if (_rows[i].Brush != null)
                     {
                         _rows[i].Brush.FontSize = fontSize;
+                        _rows[i].Brush.GlobalAlphaFactor = opacity;
                     }
+                    _rows[i].AlphaFactor = opacity;
                     _rows[i].ScaledSuggestedWidth = width;
                     _rows[i].Text = data[i].Line;
                 }
